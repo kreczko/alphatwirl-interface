@@ -18,7 +18,7 @@ class EventBuilder(object):
         )
 
     def __call__(self):
-        events = at.roottree.BEvents(self.tree, maxEvents = self.max_events)
+        events = at.roottree.BEvents(self.tree, maxEvents=self.max_events)
         return events
 
 
@@ -36,20 +36,24 @@ class Tree(object):
             ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
-    def summarize(self, tblcfg, max_events=-1):
-
+    def summarize(self, tblcfg, max_events=-1, selection=None):
+        reader_collector_pairs = []
         default_cfg = dict(
             outFile=False,
         )
+
+        if selection is not None:
+            reader_collector_pairs.append(selection.as_tuple())
+
         tblcfg = self._complement_tblcfg_with_default(tblcfg, default_cfg)
 
         tableConfigCompleter = at.configure.TableConfigCompleter(
             defaultSummaryClass=at.summary.Count,
-            createOutFileName=at.configure.TableFileNameComposer2(
+            createOutFileName=at.configure.TableFileNameComposer(
                 default_prefix='tbl_n')
         )
         tblcfg = [tableConfigCompleter.complete(c) for c in tblcfg]
-        reader_collector_pairs = [
+        reader_collector_pairs += [
             build_counter_collector_pair(c) for c in tblcfg]
 
         reader = at.loop.ReaderComposite()
@@ -57,20 +61,26 @@ class Tree(object):
         for r, c in reader_collector_pairs:
             reader.add(r)
             collector.add(c)
+
         eventBuilder = EventBuilder(self.tree, max_events=max_events)
         eventLoop = at.loop.EventLoop(eventBuilder, reader)
         reader = eventLoop()
+
         return collector.collect(((None, (reader, )), ))
 
-    def scan(self, tblcfg, max_events=10):
+    def scan(self, tblcfg, max_events=10, selection=None):
 
         default_cfg = dict(
             keyAttrNames=(),
             sort=False,
-            summaryClass=at.summary.Scan
+            summaryClass=at.summary.Scan,
         )
         tblcfg = self._complement_tblcfg_with_default(tblcfg, default_cfg)
-        return self.summarize(tblcfg, max_events=max_events)
+        return self.summarize(
+            tblcfg,
+            max_events=max_events,
+            selection=selection,
+        )
 
     def _complement_tblcfg_with_default(self, tblcfg, default_cfg):
         for cfg in tblcfg:

@@ -1,5 +1,5 @@
 import alphatwirl
-
+from alphatwirl_interface.completions import to_null_collector_pairs
 
 def _build_selection(cut_flow):
     return alphatwirl.selection.build_selection(
@@ -30,6 +30,4 @@ def cut_flow_with_counter(cut_flow, cut_flow_summary_filename):
 
 def cut_flow(cut_flow):
     eventSelection = _build_selection(cut_flow)
-    collector = alphatwirl.loop.NullCollector()
-
-    return [(eventSelection, collector)]
+    return to_null_collector_pairs([eventSelection])
