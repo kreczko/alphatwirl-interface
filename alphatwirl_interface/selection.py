@@ -17,7 +17,21 @@ Out:
 from collections import Sequence
 from alphatwirl_interface.cut_flows import cut_flow, cut_flow_with_counter
 import six
+import re
 
+VARIABLE_NAME_PATTERN = re.compile('\s?([A-Za-z][A-Za-z0-9_]+)\[?')
+
+def _step_to_lambda_string(step):
+    token = 'ev'
+    match = VARIABLE_NAME_PATTERN.findall(step)
+    result = step
+    if match:
+        for m in match:
+            newName = token + '.' + m
+            if not newName in result:
+                result = result.replace(m, newName)
+
+    return 'ev: {0}'.format(result)
 
 class Selection(object):
 
@@ -61,7 +75,8 @@ class Selection(object):
                     if isinstance(c, dict):
                         at_cuts.append(self._convert_to_alphatwirl(c))
                     else:
-                        at_cuts.append('ev: ev.{0}'.format(c))
+                        at_cuts.append(_step_to_lambda_string(c))
                 at_dict[k] = tuple(at_cuts)
+
 
         return at_dict
