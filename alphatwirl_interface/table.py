@@ -52,10 +52,12 @@ class Table(collections.MutableMapping):
 
     @property
     def outputColumns(self):
+        # needs to preserve order
         output = []
         if 'valOutColumnNames' in self.store:
             output.extend(self.store['valOutColumnNames'])
         if 'keyOutColumnNames' in self.store:
-            output.extend(self.store['keyOutColumnNames'])
-        # only return unique columns
-        return list(set(output))
+            for k in self.store['keyOutColumnNames']:
+                if not k in output:
+                    output.append(k)
+        return output
