@@ -1,5 +1,6 @@
 import alphatwirl as at
 from alphatwirl_interface.completions import to_null_collector_pairs
+from copy import deepcopy
 
 class EventBuilder(object):
 
@@ -37,19 +38,8 @@ class Tree(object):
         )
 
     def summarize(self, tblcfg, max_events=-1, modules=[]):
-        default_cfg = dict(
-            outFile=False,
-        )
-
         reader_collector_pairs = modules
-        tblcfg = self._complement_tblcfg_with_default(tblcfg, default_cfg)
 
-        tableConfigCompleter = at.configure.TableConfigCompleter(
-            defaultSummaryClass=at.summary.Count,
-            createOutFileName=at.configure.TableFileNameComposer(
-                default_prefix='tbl_n')
-        )
-        tblcfg = [tableConfigCompleter.complete(c) for c in tblcfg]
         reader_collector_pairs += [
             build_counter_collector_pair(c) for c in tblcfg]
 
@@ -66,26 +56,33 @@ class Tree(object):
         return collector.collect(((None, (reader, )), ))
 
     def scan(self, tblcfg, max_events=10, modules=[]):
-
         default_cfg = dict(
             keyAttrNames=(),
             sort=False,
             summaryClass=at.summary.Scan,
+            outFile=False,
         )
-        tblcfg = self._complement_tblcfg_with_default(tblcfg, default_cfg)
+        tblcfg = _complement_tblcfg_with_default(tblcfg, default_cfg)
+
+        tableConfigCompleter = at.configure.TableConfigCompleter(
+            defaultSummaryClass=at.summary.Count,
+            createOutFileName=at.configure.TableFileNameComposer(
+                default_prefix='tbl_n')
+        )
+        tblcfg = [tableConfigCompleter.complete(c) for c in tblcfg]
+
         return self.summarize(
             tblcfg,
             max_events=max_events,
             modules=modules,
         )
 
-    def _complement_tblcfg_with_default(self, tblcfg, default_cfg):
-        for cfg in tblcfg:
-            default_cfg_copy = default_cfg.copy()
-            default_cfg_copy.update(cfg)
-            cfg.clear()
-            cfg.update(default_cfg_copy)
-        return tblcfg
+
+def _complement_tblcfg_with_default(tblcfg, default_cfg):
+    for cfg in tblcfg:
+        for k, v in default_cfg.items():
+            cfg.setdefault(k, default=deepcopy(v))
+    return tblcfg
 
 
 def build_counter_collector_pair(tblcfg):
