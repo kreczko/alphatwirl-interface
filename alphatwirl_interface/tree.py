@@ -1,5 +1,5 @@
 import alphatwirl as at
-
+from alphatwirl_interface.completions import to_null_collector_pairs
 
 class EventBuilder(object):
 
@@ -36,15 +36,12 @@ class Tree(object):
             ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
-    def summarize(self, tblcfg, max_events=-1, selection=None):
-        reader_collector_pairs = []
+    def summarize(self, tblcfg, max_events=-1, modules=[]):
         default_cfg = dict(
             outFile=False,
         )
 
-        if selection is not None:
-            reader_collector_pairs.append(selection.as_tuple())
-
+        reader_collector_pairs = modules
         tblcfg = self._complement_tblcfg_with_default(tblcfg, default_cfg)
 
         tableConfigCompleter = at.configure.TableConfigCompleter(
@@ -68,7 +65,7 @@ class Tree(object):
 
         return collector.collect(((None, (reader, )), ))
 
-    def scan(self, tblcfg, max_events=10, selection=None):
+    def scan(self, tblcfg, max_events=10, modules=[]):
 
         default_cfg = dict(
             keyAttrNames=(),
@@ -79,7 +76,7 @@ class Tree(object):
         return self.summarize(
             tblcfg,
             max_events=max_events,
-            selection=selection,
+            modules=modules,
         )
 
     def _complement_tblcfg_with_default(self, tblcfg, default_cfg):
