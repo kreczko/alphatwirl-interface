@@ -12,6 +12,16 @@ class BasicProducer(object):
             self.__class__.__name__,
         )
 
+    def _format_attributes(self, attributes):
+        values = [getattr(self, attr) for attr in attributes]
+        template = '{} = {!r}'
+        formattedStrings = []
+        for attr, value in zip(attributes, values):
+            formattedString = template.format(attr, value)
+            formattedStrings.append(formattedString)
+
+        return ', '.join(formattedStrings)
+
     def _attach_to_obj(self, obj):
         setattr(obj, self.outputName, self.value)
 
