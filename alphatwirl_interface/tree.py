@@ -87,28 +87,30 @@ def _complement_tblcfg_with_default(tblcfg, default_cfg):
 
 def build_counter_collector_pair(tblcfg):
     keyValComposer = at.summary.KeyValueComposer(
-        keyAttrNames=tblcfg['keyAttrNames'],
         binnings=tblcfg['binnings'],
         keyIndices=tblcfg['keyIndices'],
         valAttrNames=tblcfg['valAttrNames'],
-        valIndices=tblcfg['valIndices']
+        valIndices=tblcfg['valIndices'],
     )
-    nextKeyComposer = at.summary.NextKeyComposer(
-        tblcfg['binnings']) if tblcfg['binnings'] is not None else None
+
+    nextKeyComposer = None
+    if tblcfg['binnings'] is not None:
+        nextKeyComposer = at.summary.NextKeyComposer(tblcfg['binnings'])
+
     summarizer = at.summary.Summarizer(
-        Summary=tblcfg['summaryClass']
+        Summary=tblcfg['summaryClass'],
     )
     reader = at.summary.Reader(
         keyValComposer=keyValComposer,
         summarizer=summarizer,
         nextKeyComposer=nextKeyComposer,
         weightCalculator=tblcfg['weight'],
-        nevents=tblcfg['nevents']
+        nevents=tblcfg['nevents'],
     )
     resultsCombinationMethod = at.collector.ToDataFrame(
-        summaryColumnNames=tblcfg[
-            'keyOutColumnNames'] + tblcfg['valOutColumnNames']
+        summaryColumnNames=tblcfg.outputColumns,
     )
+
     deliveryMethod = None
     collector = at.loop.Collector(
         resultsCombinationMethod, deliveryMethod)
