@@ -42,3 +42,20 @@ class Table(collections.MutableMapping):
 
     def copy(self):
         return Table(**self.store)
+
+    def __repr__(self):
+        result = []
+        for k, v in self.store.items():
+            result.append('{0}={1}'.format(k, v))
+        title = '{}(): '.format(self.__class__.__name__)
+        return title + ', '.join(result)
+
+    @property
+    def outputColumns(self):
+        output = []
+        if 'valOutColumnNames' in self.store:
+            output.extend(self.store['valOutColumnNames'])
+        if 'keyOutColumnNames' in self.store:
+            output.extend(self.store['keyOutColumnNames'])
+        # only return unique columns
+        return list(set(output))
