@@ -2,7 +2,7 @@ import alphatwirl as at
 from alphatwirl_interface import Table
 from alphatwirl_interface.tree import _complement_tblcfg_with_default
 from nose.tools import assert_equal
-
+# TODO move to nose2
 
 def test_vanishing_attribute_names():
     '''
