@@ -33,11 +33,13 @@ class InvariantMass(BasicProducer):
 
         self.v1 = []
         self.v2 = []
+        self.v = []
 
     def _value(self, obj):
         self.v1[:] = list(_extract_values(obj, self.input1))
         self.v2[:] = list(_extract_values(obj, self.input2))
+        self.v[:] = np.add(self.v1, self.v2)
 
-        energy = self.v1[0] * self.v2[0]
-        momentum = np.dot(self.v1[1:], self.v2[1:])
-        return [np.sqrt(energy - momentum)]
+        energySquared = pow(self.v[0], 2)
+        momentumSquared = np.dot(self.v[1:], self.v[1:])
+        return [np.sqrt(energySquared - momentumSquared)]
