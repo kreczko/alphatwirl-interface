@@ -14,12 +14,14 @@ def _extract_index(name):
         return newName, index
     return name, None
 
+
 def _extract_values(obj, namesAndIndices):
     for (name, index) in namesAndIndices:
         if index is not None:
             yield getattr(obj, name)[index]
         else:
             yield getattr(obj, name)
+
 
 class InvariantMass(BasicProducer):
 
