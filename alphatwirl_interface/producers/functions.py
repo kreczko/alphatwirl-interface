@@ -27,13 +27,16 @@ class NewFromFunction(BasicProducer):
 
 
 class Divide(NewFromFunction):
+
     def __init__(self, outputName, inputs):
         super(self.__class__, self).__init__(outputName, inputs, np.divide)
 
+
 class TransverseMomentum(NewFromFunction):
+
     def __init__(self, outputName, inputs):
         super(self.__class__, self).__init__(
             outputName,
             inputs,
-            function = lambda x, y: np.sqrt(np.square(x) + np.square(y))
+            function=lambda x, y: np.sqrt(np.square(x) + np.square(y))
         )
