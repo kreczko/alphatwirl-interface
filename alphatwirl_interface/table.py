@@ -58,6 +58,6 @@ class Table(collections.MutableMapping):
             output.extend(self.store['valOutColumnNames'])
         if 'keyOutColumnNames' in self.store:
             for k in self.store['keyOutColumnNames']:
-                if not k in output:
+                if k not in output:
                     output.append(k)
         return output
