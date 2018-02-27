@@ -1,4 +1,3 @@
-from collections import namedtuple
 import pytest
 import numpy as np
 from alphatwirl_interface.producers.invariantMass import _extract_index, _extract_values

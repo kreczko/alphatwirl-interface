@@ -1,4 +1,3 @@
-from collections import namedtuple
 import pytest
 import numpy as np
 from alphatwirl_interface.producers import TransverseMomentum, Divide, NewFromFunction

@@ -2,6 +2,9 @@ from alphatwirl_interface.completions import complete, to_null_collector_pairs
 
 
 class BasicProducer(object):
+    '''
+        A basic producer implementing the bare-bone for all derived classes.
+    '''
 
     def __init__(self, outputName):
         self.outputName = outputName
