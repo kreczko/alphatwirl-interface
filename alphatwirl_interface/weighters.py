@@ -1,5 +1,5 @@
 import operator
-
+from functools import reduce
 
 
 class WeightCalculatorProduct(object):
