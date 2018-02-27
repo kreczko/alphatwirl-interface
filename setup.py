@@ -14,6 +14,15 @@ from setuptools import setup, find_packages
 # long_description = readme + '\n\n' + history
 long_description = 'Interface development package for alphatwirl'
 
+authors = []
+author_emails = []
+with open('authors.txt') as f:
+    for line in f.readlines():
+        author, email = line.split(',')
+        authors.append(author)
+        author_emails.append(email)
+authors = ', '.join(authors)
+author_emails = ', '.join(author_emails)
 
 install_reqs = [
     'alphatwirl',
@@ -36,8 +45,8 @@ setup(
     version='0.0.1',
     description="Interface development package for alphatwirl",
     long_description=long_description,
-    author="Luke Kreczko",
-    author_email='kreczko@cern.ch',
+    author=authors,
+    author_email=author_emails,
     url='https://github.com/alphatwirl/alphatwirl-interface',
     packages=find_packages(include=['alphatwirl_interface']),
     include_package_data=True,
