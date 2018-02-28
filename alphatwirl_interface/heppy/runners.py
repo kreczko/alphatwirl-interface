@@ -20,7 +20,7 @@ def build_job_manager(outdir, heppydir, **kwargs):
     #        'expected_runtime_minutes = 10',
     #        'job_machine_attrs = Machine',
     #        'job_machine_attrs_history_length = 4',
-    #        'requirements = target.machine =!= MachineAttrMachine1 && target.machine =!= MachineAttrMachine2 &&  target.machine =!= MachineAttrMachine3',
+    #        'requirements = target.machine =!= MachineAttrMachine1 && target.machine =!= MachineAttrMachine2',
     #        'periodic_hold = JobStatus == 2 && CurrentTime - EnteredCurrentStatus > 60 * $(expected_runtime_minutes)',
     #        'periodic_hold_subcode = 1',
     #        'periodic_release = HoldReasonCode == 3 && HoldReasonSubCode == 1 && JobRunCount < 3',
@@ -30,17 +30,19 @@ def build_job_manager(outdir, heppydir, **kwargs):
 
     # http://www.its.hku.hk/services/research/htc/jobsubmission
     # avoid the machines "smXX.hadoop.cluster"
-    # operator '=!=' explained at https://research.cs.wisc.edu/htcondor/manual/v7.8/4_1HTCondor_s_ClassAd.html#ClassAd:evaluation-meta
+    # operator '=!=' explained at
+    # https://research.cs.wisc.edu/htcondor/manual/v7.8/4_1HTCondor_s_ClassAd.html#ClassAd:evaluation-meta
     htcondor_job_desc_extra_blacklist = [
         'requirements=!stringListMember(substr(Target.Machine, 0, 2), "sm,bs")'
     ]
 
-    htcondor_job_desc_extra = htcondor_job_desc_extra_request + htcondor_job_desc_extra_blacklist
+    htcondor_job_desc_extra = htcondor_job_desc_extra_request + \
+        htcondor_job_desc_extra_blacklist
 
     heppy_mgr = FrameworkHeppy(
-        outdir = outdir,
-        heppydir = heppydir,
-        htcondor_job_desc_extra = htcondor_job_desc_extra,
+        outdir=outdir,
+        heppydir=heppydir,
+        htcondor_job_desc_extra=htcondor_job_desc_extra,
         **kwargs
 
     )
