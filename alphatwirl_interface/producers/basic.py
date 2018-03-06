@@ -39,5 +39,5 @@ class BasicProducer(object):
         self._attach_to_obj(obj)
         self.value[:] = self._value(obj)
 
-    def as_tuple(self):
+    def module(self):
         return to_null_collector_pairs([self])[0]
