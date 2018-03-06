@@ -3,7 +3,7 @@ from alphatwirl_interface.cut_flows import cut_flow, cut_flow_with_counter
 import six
 
 
-class Selection(object):
+def Selection(steps={}, cutflow_file=None):
     '''
         This class ties together several modules from alphatwirl to
         bring a simplified Selection experience.
@@ -28,30 +28,15 @@ class Selection(object):
 
           # define in alphatwirl modules to pass to tree.scan
           modules = [
-            preselection.as_tuple(),
+            preselection,
             ...
           ]
     '''
-
-    def __init__(self, steps={}, cutflow_file=None):
-        self.cutflow_file = cutflow_file
-        self.steps = steps
-
-    def set_cutflow_file(self, cutflow_file):
-        self.cutflow_file = cutflow_file
-
-    def as_list(self):
-        return [self.as_tuple()]
-
-    def as_tuple(self):
-        return self._get_reader_collector_pair()
-
-    def _get_reader_collector_pair(self):
-        rc_pair = None
-        if self.cutflow_file:
-            rc_pair = cut_flow_with_counter(
-                self.steps, self.cutflow_file,
-            )
-        else:
-            rc_pair = cut_flow(self.steps)
-        return rc_pair[0]
+    rc_pair = None
+    if cutflow_file:
+        rc_pair = cut_flow_with_counter(
+            steps, cutflow_file,
+        )
+    else:
+        rc_pair = cut_flow(steps)
+    return rc_pair[0]

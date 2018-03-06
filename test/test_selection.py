@@ -19,19 +19,31 @@ def example_selection():
     return selection
 
 
-def test_cutflow_file(example_selection):
-    s = example_selection
-    s.set_cutflow_file('/tmp/test.txt')
-    s_tuple = s.as_tuple()
-    assert len(s_tuple) == 2
-    assert isinstance(s_tuple[0], AllwCount)
-    assert isinstance(s_tuple[1], Collector)
-    assert isinstance(s_tuple[1].deliveryMethod, WriteListToFile)
+@pytest.fixture
+def example_selection_with_cutflow_file():
+    selection = Selection(
+        dict(
+            All=(
+                'di_muon_mass[0] > 60',
+                'di_muon_mass[0] < 120',
+            )
+        ),
+        cutflow_file='/tmp/test.txt',
+    )
+    return selection
+
+
+def test_cutflow_file(example_selection_with_cutflow_file):
+    s = example_selection_with_cutflow_file
+    # s_tuple = s.as_tuple()
+    assert len(s) == 2
+    assert isinstance(s[0], AllwCount)
+    assert isinstance(s[1], Collector)
+    assert isinstance(s[1].deliveryMethod, WriteListToFile)
 
 
 def test_no_cutflow_file(example_selection):
     s = example_selection
-    s_tuple = s.as_tuple()
-    assert len(s_tuple) == 2
-    assert isinstance(s_tuple[0], AllwCount)
-    assert isinstance(s_tuple[1], NullCollector)
+    assert len(s) == 2
+    assert isinstance(s[0], AllwCount)
+    assert isinstance(s[1], NullCollector)
