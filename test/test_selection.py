@@ -47,3 +47,9 @@ def test_no_cutflow_file(example_selection):
     assert len(s) == 2
     assert isinstance(s[0], AllwCount)
     assert isinstance(s[1], NullCollector)
+
+
+def test_empty_selection():
+    with pytest.raises(ValueError) as ex:
+        Selection({})
+    assert 'cannot recognize the path_cfg' in str(ex.value)
